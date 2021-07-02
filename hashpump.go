@@ -5,7 +5,7 @@ import (
 	"errors"
 	"hash"
 
-	plugin "github.com/coredumptoday/hashpump/pump"
+	"github.com/coredumptoday/hashpump/plugin"
 )
 
 func init() {

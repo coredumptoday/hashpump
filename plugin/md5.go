@@ -1,4 +1,4 @@
-package pump
+package plugin
 
 import (
 	"crypto/md5"
