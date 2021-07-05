@@ -31,47 +31,24 @@ func sha256padding(l uint64) []byte {
 	return padding
 }
 
-func buildMb(sign []byte, l uint64, is224 bool) []byte {
-
-	mb := make([]byte, 0, sha256marshaledSize)
-	if is224 {
-		mb = append(mb, sha256magic224...)
-	} else {
-		mb = append(mb, sha256magic256...)
-	}
-
-	mb = appendUint32B2B(mb, sign[:4])
-	mb = appendUint32B2B(mb, sign[4:8])
-	mb = appendUint32B2B(mb, sign[8:12])
-	mb = appendUint32B2B(mb, sign[12:16])
-	mb = appendUint32B2B(mb, sign[16:20])
-	mb = appendUint32B2B(mb, sign[20:24])
-	mb = appendUint32B2B(mb, sign[24:28])
-	if is224 {
-		mb = appendUint32B2B(mb, make([]byte, 4))
-	} else {
-		mb = appendUint32B2B(mb, sign[28:])
-	}
-
-	mb = mb[:len(mb)+sha256.BlockSize] // already zero
-	mb = appendUint64(mb, l)
-	return mb
-}
-
 var SHA256Build = func(Origin, Sign []byte, KeyLen int) (padding, mb []byte, err error) {
 	originLen := uint64(len(Origin) + KeyLen)
 	padding = sha256padding(originLen)
 
-	mb = buildMb(Sign, originLen+uint64(len(padding)), false)
+	mb = make([]byte, 0, sha256marshaledSize)
 
-	return
-}
+	mb = append(mb, sha256magic256...)
+	mb = appendUint32B2B(mb, Sign[:4])
+	mb = appendUint32B2B(mb, Sign[4:8])
+	mb = appendUint32B2B(mb, Sign[8:12])
+	mb = appendUint32B2B(mb, Sign[12:16])
+	mb = appendUint32B2B(mb, Sign[16:20])
+	mb = appendUint32B2B(mb, Sign[20:24])
+	mb = appendUint32B2B(mb, Sign[24:28])
+	mb = appendUint32B2B(mb, Sign[28:])
 
-var SHA224Build = func(Origin, Sign []byte, KeyLen int) (padding, mb []byte, err error) {
-	originLen := uint64(len(Origin) + KeyLen)
-	padding = sha256padding(originLen)
-
-	mb = buildMb(Sign, originLen+uint64(len(padding)), true)
+	mb = mb[:len(mb)+sha256.BlockSize] // already zero
+	mb = appendUint64(mb, originLen+uint64(len(padding)))
 
 	return
 }

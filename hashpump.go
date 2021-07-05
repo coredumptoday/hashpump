@@ -2,6 +2,7 @@ package hashpump
 
 import (
 	"crypto"
+	"encoding"
 	"errors"
 	"hash"
 
@@ -12,7 +13,6 @@ func init() {
 	RegisterPump(crypto.MD5, plugin.MD5Build)
 	RegisterPump(crypto.SHA1, plugin.SHA1Build)
 	RegisterPump(crypto.SHA256, plugin.SHA256Build)
-	//RegisterPump(crypto.SHA224, plugin.SHA224Build)
 	RegisterPump(crypto.SHA512, plugin.SHA512Build)
 }
 
@@ -60,7 +60,7 @@ func (b *Builder) Build() (padding []byte, nh hash.Hash, err error) {
 	}
 
 	nh = b.h.New()
-	err = nh.(plugin.Marshalable).UnmarshalBinary(mb)
+	err = nh.(encoding.BinaryUnmarshaler).UnmarshalBinary(mb)
 	if err != nil {
 		return nil, nil, err
 	}

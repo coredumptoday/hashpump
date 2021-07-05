@@ -2,11 +2,6 @@ package plugin
 
 import "encoding/binary"
 
-type Marshalable interface {
-	MarshalBinary() ([]byte, error)
-	UnmarshalBinary([]byte) error
-}
-
 func appendUint32(b, s []byte) []byte {
 	l32 := binary.LittleEndian.Uint32(s)
 	var a [4]byte
