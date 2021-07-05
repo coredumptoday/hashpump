@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	magic         = "md5\x01"
-	marshaledSize = len(magic) + 4*4 + md5.BlockSize + 8
+	md5magic         = "md5\x01"
+	md5marshaledSize = len(md5magic) + 4*4 + md5.BlockSize + 8
 )
 
 func md5padding(l uint64) []byte {
@@ -17,25 +17,12 @@ func md5padding(l uint64) []byte {
 	return tmp[:1+pad+8]
 }
 
-func appendUint32(b, s []byte) []byte {
-	l32 := binary.LittleEndian.Uint32(s)
-	var a [4]byte
-	binary.BigEndian.PutUint32(a[:], l32)
-	return append(b, a[:]...)
-}
-
-func appendUint64(b []byte, x uint64) []byte {
-	var a [8]byte
-	binary.BigEndian.PutUint64(a[:], x)
-	return append(b, a[:]...)
-}
-
 var MD5Build = func(Origin, Sign []byte, KeyLen int) (padding, mb []byte, err error) {
 	originLen := uint64(len(Origin) + KeyLen)
 	padding = md5padding(originLen)
 
-	mb = make([]byte, 0, marshaledSize)
-	mb = append(mb, magic...)
+	mb = make([]byte, 0, md5marshaledSize)
+	mb = append(mb, md5magic...)
 	mb = appendUint32(mb, Sign[:4])
 	mb = appendUint32(mb, Sign[4:8])
 	mb = appendUint32(mb, Sign[8:12])

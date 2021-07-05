@@ -10,6 +10,10 @@ import (
 
 func init() {
 	RegisterPump(crypto.MD5, plugin.MD5Build)
+	RegisterPump(crypto.SHA1, plugin.SHA1Build)
+	RegisterPump(crypto.SHA256, plugin.SHA256Build)
+	//RegisterPump(crypto.SHA224, plugin.SHA224Build)
+	RegisterPump(crypto.SHA512, plugin.SHA512Build)
 }
 
 type BuildFunc func([]byte, []byte, int) (padding, mb []byte, err error)
