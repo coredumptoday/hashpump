@@ -24,12 +24,6 @@ func RegisterPump(h crypto.Hash, f BuildFunc) {
 	pumpMap[h] = f
 }
 
-type pump interface {
-	hash.Hash
-	MarshalBinary() ([]byte, error)
-	UnmarshalBinary(b []byte) error
-}
-
 type Builder struct {
 	Origin []byte
 	KeyLen int
@@ -66,7 +60,7 @@ func (b *Builder) Build() (padding []byte, nh hash.Hash, err error) {
 	}
 
 	nh = b.h.New()
-	err = nh.(pump).UnmarshalBinary(mb)
+	err = nh.(plugin.Marshalable).UnmarshalBinary(mb)
 	if err != nil {
 		return nil, nil, err
 	}
